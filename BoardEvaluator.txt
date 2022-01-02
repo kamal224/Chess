@@ -1,0 +1,79 @@
+
+    Quick guide of how to add a board evaluation method
+    ---------------------------------------------------
+
+To add a board evaluation method, you simply need to add a new class to
+the assembly which implements the IBoardEvaluation interface.
+
+The IBoardEvaluation interface is defined as follow:
+
+    /// <summary>Implements a board evaluation methods</summary>
+    /// Board:  63 62 61 60 59 58 57 56
+    ///         55 54 53 52 51 50 49 48
+    ///         47 46 45 44 43 42 41 40
+    ///         39 38 37 36 35 34 33 32
+    ///         31 30 29 28 27 26 25 24
+    ///         23 22 21 20 19 18 17 16
+    ///         15 14 13 12 11 10 9  8
+    ///         7  6  5  4  3  2  1  0
+    /// Each position contains a PieceE enum with PieceE.White or PieceE.Black
+    /// 
+    /// m_piPiecesCount[PieceE.Pawn | PieceE.White .. PieceE.King | PieceE.White] for white
+    /// m_piPiecesCount[PieceE.Pawn | PieceE.Black .. PieceE.King | PieceE.Black] for black
+    /// Black and White king position are set using the board position.
+    /// 
+    public interface IBoardEvaluation {
+
+        //*********************************************************     
+        //
+        /// <summary>
+        /// Name of the board evaluation method.
+        /// </summary>
+        //  
+        //*********************************************************     
+        string  Name { get; }
+
+        //*********************************************************     
+        //
+        /// <summary>
+        /// Evaluates a board. The number of point is greater than 0 if white is in advantage, less than 0 if black is.
+        /// </summary>
+        /// <param name="pBoard">           Board.</param>
+        /// <param name="piPiecesCount">    Number of each pieces</param>
+        /// <param name="posInfo">          Information about pieces position</param>
+        /// <param name="iWhiteKingPos">    Position of the white king</param>
+        /// <param name="iBlackKingPos">    Position of the black king</param>
+        /// <param name="bWhiteCastle">     White has castled</param>
+        /// <param name="bBlackCastle">     Black has castled</param>
+        /// <param name="iMoveCountDelta">  Number of possible white move - Number of possible black move</param>
+        /// <returns>
+        /// Points
+        /// </returns>
+        //  
+        //*********************************************************     
+        public int Points(ChessBoard.PieceE[] pBoard, int[] piPiecesCount, ChessBoard.PosInfoS posInfo, int iWhiteKingPos, int iBlackKingPos, bool bWhiteCastle, bool bBlackCastle, int iMoveCountDelta);
+
+    The property 'Name' return a unique and user friendly name for the board evaluation method.
+
+    The method 'Points' do the board evaluation jobs.
+
+    Two implementations of this interface can be found in the solution:
+
+        BoardEvaluationBasic.cs     The actual minimalist board evaluation routine.
+        BoardEvaluationTest.cs      A testing version which inherit from BoardEvaluationBasic but
+                                    add a random deficiency to degrade its performance.
+
+    When you implement a new board evaluation class, you don't need to register it. The class will be
+    found as long as the class is in the same assembly (using reflection). Once defined, you can now
+    select the new board evaluation method using the option in search mode dialog box. You can also
+    compare the performance of the new board evaluation method compare to another existing one using
+    the  'Tool -> Test Board Evaluation...' menu option.
+
+    The amount of information provides to the Points routine is minimalist for the moment. I hope to
+    add up a lot more information later.
+
+    Have fun...
+
+    P.S.: If you find a better board evaluator that the basic one, let me know ;-)
+
+
